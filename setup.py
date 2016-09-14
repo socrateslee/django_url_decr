@@ -2,12 +2,12 @@
 
 sdict = {
     'name': 'django_url_decr',
-    'version': "0.1.0",
+    'version': "0.2.0",
     'packages': ['django_url_decr'],
     'zip_safe': False,
     'install_requires': ['django'],
     'author': 'Lichun',
-    'url': 'https://github.com/yuexue/django_url_decr',
+    'url': 'https://github.com/socrateslee/django_url_decr',
     'classifiers': [
         'Environment :: Console',
         'Framework :: Django',
