@@ -1,6 +1,9 @@
 import functools
-from django.core.urlresolvers import RegexURLPattern, RegexURLResolver
 from django.conf.urls import url
+try:
+    from django.urls import RegexURLPattern, RegexURLResolver
+except ImportError:
+    from django.core.urlresolvers import RegexURLPattern, RegexURLResolver
 
 
 def dummy_decr(func):
@@ -34,6 +37,9 @@ def url_decr(*sub, **kw):
     pattern = url(*sub, **kw)
     if decr:
         for __, p in iter_pattern(pattern):
-            if p.callback:
+            # For django<1.10.1
+            if hasattr(p, '_callback') and callable(p._callback):
                 p._callback = decr(p._callback)
+            elif callable(p.callback):
+                p.callback = decr(p.callback)
     return pattern
