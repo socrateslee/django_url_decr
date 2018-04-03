@@ -1,10 +1,30 @@
 import functools
 import copy
+import django
 from django.conf.urls import url
-try:
-    from django.urls import RegexURLPattern, RegexURLResolver
-except ImportError:
-    from django.core.urlresolvers import RegexURLPattern, RegexURLResolver
+if django.VERSION >= (2, 0):
+    from django.urls import URLPattern, URLResolver
+
+
+    class RegexURLPattern:
+          pass
+
+
+    class RegexURLResolver:
+          pass
+else:
+    try:
+        from django.urls import RegexURLPattern, RegexURLResolver
+    except ImportError:
+        from django.core.urlresolvers import RegexURLPattern, RegexURLResolver
+
+
+    class URLPattern:
+        pass
+
+
+    class URLResolver:
+        pass
 
 
 def copy_url_component(source):
@@ -15,8 +35,10 @@ def copy_url_component(source):
     curr = copy.copy(source)
     if isinstance(curr, RegexURLPattern):
         return curr
-    elif isinstance(curr, RegexURLResolver):
-        curr.url_patterns = map(copy_url_component, curr.url_patterns)
+    if isinstance(curr, URLPattern):
+        return curr
+    elif isinstance(curr, (URLResolver, RegexURLResolver)):
+        curr.url_patterns = list(map(copy_url_component, curr.url_patterns))
         return curr
     else:
         raise Exception("Unknown url pattern type %s."\
@@ -42,9 +64,9 @@ def iter_pattern(pattern):
     stack = [(0, pattern)]
     while stack:
         level, curr = stack.pop()
-        if type(curr) is RegexURLPattern:
+        if isinstance(curr, (RegexURLPattern, URLPattern)):
             yield level, curr
-        elif type(curr) is RegexURLResolver:
+        elif isinstance(curr, (RegexURLResolver, URLResolver)):
             for p in curr.url_patterns:
                 stack.append((level + 1, p))
         else:
