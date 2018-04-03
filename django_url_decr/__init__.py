@@ -7,4 +7,4 @@ from .url_decr import url_decr
 
 __all__ = ['url_decr']
 
-__VERSION__ = '0.2.0'
+__VERSION__ = '0.3.0'

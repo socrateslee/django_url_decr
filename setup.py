@@ -1,13 +1,22 @@
 #!/usr/bin/env python
 
+long_description = ""
+
+try:
+    import pypandoc
+    long_description = pypandoc.convert('README.md', 'rst')
+except:
+    pass
+
 sdict = {
     'name': 'django_url_decr',
-    'version': "0.2.0",
+    'version': "0.3.0",
     'packages': ['django_url_decr'],
     'zip_safe': False,
     'install_requires': ['django'],
     'author': 'Lichun',
     'url': 'https://github.com/socrateslee/django_url_decr',
+    'long_description': long_description,
     'classifiers': [
         'Environment :: Console',
         'Framework :: Django',
